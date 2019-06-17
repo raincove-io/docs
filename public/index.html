@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Raincove - API Documentations</title>
+    <!-- needed for adaptive design -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+            background-color: #162332;
+            font-weight: 700;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
+
+        .logo {
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+            padding-left: 1em;
+            width: 25%;
+        }
+
+        .title {
+            padding-right: 1em;
+            color: #d5d7da;
+        }
+
+        .gap {
+            height: 58.33px;
+        }
+    </style>
+</head>
+
+<body>
+<nav>
+    <div class="container">
+        <a href="/"><img class="logo" src="images/logo.png"/></a>
+        <div class="title">API Documentations</div>
+    </div>
+</nav>
+<div class="gap"></div>
+<div id="redoc"></div>
+<script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const service = urlParams.get('service') || "companies";
+    Redoc.init(`openapi/${service}.yaml`, {
+        scrollYOffset: 60,
+        requiredPropsFirst: true,
+        hideDownloadButton: true,
+        theme: {
+            colors: {
+                primary: {
+                    main: '#162332'
+                },
+                text: {
+                    main: '#d5d7da'
+                }
+            },
+            menu: {
+                backgroundColor: '#d5d7da',
+                textColor: '#162332'
+            },
+            rightPanel: {
+                backgroundColor: '#162332',
+                textColor: '#d5d7da'
+            }
+        }
+    }, document.getElementById('redoc'))
+</script>
+</body>
+
+</html>

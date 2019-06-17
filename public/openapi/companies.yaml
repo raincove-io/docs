@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  description: |
+  license:
+    name: Apache 2.0
+  title: Companies
+  version: 1.0.0-RC
+
+paths:
+  /companies:
+    post:
+      tags:
+        - Companies
+      summary: Create Company
+      operationId: CreateCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        201:
+          description: Created
+  /companies/{id}:
+    put:
+      tags:
+        - Companies
+      summary: Update Company
+      operationId: UpdateCompany
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        202:
+          description: Accepted
+    get:
+      tags:
+        - Companies
+      summary: Get Company
+      operationId: GetCompany
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+    delete:
+      tags:
+        - Companies
+      summary: Delete Company
+      operationId: DeleteCompany
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+      responses:
+        202:
+          description: Accepted
+
+components:
+  schemas:
+    Company:
+      properties:
+        id:
+          type: string
+        idType:
+          type: string
+        description:
+          type: string
+        sector:
+          type: string
+        industry:
+          type: string
+        country:
+          type: string
+        ticker:
+          type: string
+        name:
+          type: string
+        createdOn:
+          type: string
+          format: 'date-time'
+        createdBy:
+          type: string
+        updatedOn:
+          type: string
+          format: 'date-time'
+        updatedBy:
+          type: string

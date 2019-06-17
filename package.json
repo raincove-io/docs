@@ -1,0 +1,22 @@
+{
+  "name": "docs",
+  "version": "1.0.0-RC",
+  "description": "API documentation for Aladdin Wealth",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@blade-git.blackrock.com:aw/docs.git"
+  },
+  "keywords": [
+    "api"
+  ],
+  "author": "Erfang Chen, CFA",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.17.1",
+    "yargs": "^13.2.4"
+  }
+}
