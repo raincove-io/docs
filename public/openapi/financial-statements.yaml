@@ -47,8 +47,8 @@ paths:
     delete:
       tags:
         - Financial Statements
-      summary: Delete Financial Statemetns
-      operationId: DeleteFinancialStatemetns
+      summary: Delete Financial Statements
+      operationId: DeleteFinancialStatements
       parameters:
         - name: companyId
           in: path
