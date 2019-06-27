@@ -13,7 +13,7 @@ SERVER=https://api.raincove.io
 
 docker run \
     --volume ${WORKING_DIR}:/app \
-    aladdinwealth-docker.jfrog.io/sdk-generator:latest \
+    erfangc/sdk-generator:latest \
     --artifactId raincove-sdk \
     --groupId io.github.erfangc \
     --authorizationServer https://raincove.auth0.com \
