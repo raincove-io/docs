@@ -17,8 +17,6 @@ URL=https://github.com/raincove-io
 # clone the SDK repo
 #
 git clone ${URL}/${SDK_NAME}.git ${OUTPUT_DIR}/${SDK_NAME}
-git config user.name "Erfang Chen"
-git config user.email erfangc@gmail.com
 
 #
 # generate the SDK
@@ -51,6 +49,8 @@ docker run \
 #
 SAVED=$(pwd -P)
 cd ${OUTPUT_DIR}/${SDK_NAME}
+git config user.name "Erfang Chen"
+git config user.email erfangc@gmail.com
 
 mvn -B verify
 
