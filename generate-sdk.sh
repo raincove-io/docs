@@ -9,12 +9,24 @@ OUTPUT_DIR=$PWD/output
 rm -rf ${OUTPUT_DIR} &&
 mkdir -p ${OUTPUT_DIR} &&
 
+SDK_NAME=raincove-sdk
 SERVER=https://api.raincove.io
+URL=https://github.com/raincove-io
 
+#
+# clone the SDK repo
+#
+git clone ${URL}/${SDK_NAME}.git ${OUTPUT_DIR}/${SDK_NAME}
+git config user.name "Erfang Chen"
+git config user.email erfangc@gmail.com
+
+#
+# generate the SDK
+#
 docker run \
     --volume ${WORKING_DIR}:/app \
     erfangc/sdk-generator:latest \
-    --artifactId raincove-sdk \
+    --artifactId ${SDK_NAME} \
     --groupId io.github.erfangc \
     --authorizationServer https://raincove.auth0.com \
     --credentialsFilePath .raincove/credentials.json \
@@ -24,6 +36,24 @@ docker run \
     --operationsPackageName io.github.erfangc.raincove.sdk.operations \
     --sdkAudience ${SERVER} \
     --sdkClientId t6VkSzjatwn240k31waGW8lhiRjCN6Y4 \
-    --sdkName raincove-sdk \
-    --sdkOutputDirectory /app/output/raincove-sdk \
-    --serviceEndpoint ${SERVER}
+    --sdkName ${SDK_NAME} \
+    --sdkOutputDirectory /app/output/${SDK_NAME} \
+    --serviceEndpoint ${SERVER} \
+    --url ${URL} \
+    --name "Erfang Chen" \
+    --email "erfangc@gmail.com" \
+    --scmConnection scm:git:git://github.com/raincove-io/${SDK_NAME}.git \
+    --scmDeveloperConnection scm:git:git@github.com:raincove-io/${SDK_NAME}.git \
+    --scmUrl ${URL}/${SDK_NAME}/tree/master\
+
+#
+# build and commit the generated SDK back into Git
+#
+SAVED=$(pwd -P)
+cd ${OUTPUT_DIR}/${SDK_NAME}
+
+mvn -B verify
+
+git add -A && git commit -m "Sync SDK code with API spec" && git push -u origin master
+
+cd ${SAVED}
