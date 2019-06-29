@@ -1,0 +1,738 @@
+openapi: 3.0.0
+info:
+  description: |
+    # Overview
+    Finser is the financial statements and company information server, providing access to US GAAP financial statements for companies across
+    the US equity universe. The service also allows users to query indicative data for companies
+
+    CRUD API end-points are made available
+
+    # SDK
+
+    The easiest way to access the functionalities of Finser is to use one of the SDKs. Current a JVM based SDK can be found on Maven Central
+    [Here](https://search.maven.org/search?q=a:raincove-sdk%20g:io.github.erfangc). See below for some examples on how to call the SDK
+
+    Note that to use the SDK you must either have an account with us or use one of the approved identity providers (such as Google). The 1st time you use the SDK
+    you will be automatically prompted to enter credentials
+
+    ## Example SDK Usage
+
+    ```kotlin
+    // gradle Kotlin DSL
+    dependencies {
+      implementation("io.github.erfangc:raincove-sdk:0.0.1")
+    }
+    ```
+
+    ```xml
+    <dependency>
+        <groupId>io.github.erfangc</groupId>
+        <artifactId>raincove-sdk</artifactId>
+        <version>RELEASE</version>
+    </dependency>
+    ```
+
+    ```kotlin
+    val finser = RaincoveSdk.finser()
+    val response = finser.getFinancialStatements("MSFT")
+    // access specific fields data
+    response.financialStatements[0].balanaceSheet.accountsPayable
+    ```
+
+    ## SDK Usage in Servers and Automated Jobs
+
+    It is possible to use the SDK in scheduled jobs (i.e. as Machine User) or in a live service. However, this requires you possess a set of credentials known as `CLIENT_ID` and `CLIENT_SECRET`. These are provisioned
+    by contacting us. In the future these may be provisioned automatically. Once you've obtained the `CLIENT_ID` and `CLIENT_SECRET`, set these as environment variables in your program and you will automatically be authenticated
+
+  license:
+    name: Apache 2.0
+  title: Finser
+  version: 1.0.0-RC
+servers:
+  - url: /finser/api/v1
+paths:
+  /companies:
+    post:
+      tags:
+        - Companies
+      summary: Create or Update a Company
+      description: |
+        Creates a new company or update an existing one. The request body contains the company id. If a company with the provided id already exist
+        then the operation is considered an update, otherwise a new company will be created
+      operationId: CreateOrUpdateCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateCompanyRequest'
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateCompanyResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateCompanyResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateCompanyResponse'
+  /companies/{id}:
+    get:
+      tags:
+        - Companies
+      summary: Get Company
+      description: |
+        Gets a company by it's id. The id is a US stock ticker for US equities. In the future, this id could be something else
+        for world wide stocks
+      operationId: GetCompany
+      parameters:
+        - name: id
+          in: path
+          example: MSFT
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCompanyResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCompanyResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCompanyResponse'
+    delete:
+      tags:
+        - Companies
+      summary: Delete Company
+      description: |
+        Deletes a company by it's id. The id is a US stock ticker for US equities. In the future, this id could be something else
+        for world wide stocks
+      operationId: DeleteCompany
+      parameters:
+        - name: id
+          in: path
+          example: MSFT
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCompanyResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCompanyResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCompanyResponse'
+
+  /companies/{companyId}/financial-statements:
+    get:
+      tags:
+        - Financial Statements
+      summary: Get Financial Statements
+      description: |
+        Retrieves all financial statements for a given company
+      operationId: GetFinancialStatements
+      parameters:
+        - name: companyId
+          in: path
+          example: MSFT
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFinancialStatementsResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFinancialStatementsResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFinancialStatementsResponse'
+    post:
+      tags:
+        - Financial Statements
+      summary: Create or Update Financial Statements
+      description: |
+        Creates or update a set of financial statements for a given company. If the included financial statements already exist they will be
+        updated, otherwise new financial statement objects are created. Note that financial statements within a given company is uniquely identified
+        by its `id` property, not just filing date and filing type. If two otherwise identical statements are saved using this API operation with different ids, two
+        distinct financial statement objects will be created
+      operationId: CreateOrUpdateFinancialStatements
+      parameters:
+        - name: companyId
+          in: path
+          example: MSFT
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateFinancialStatementsRequest'
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateFinancialStatementsResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateFinancialStatementsResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateFinancialStatementsResponse'
+    delete:
+      tags:
+        - Financial Statements
+      summary: Delete Financial Statements
+      operationId: DeleteFinancialStatements
+      description: |
+        Deletes all financial statements for the provided company id
+      parameters:
+        - name: companyId
+          in: path
+          example: MSFT
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFinancialStatementsResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFinancialStatementsResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFinancialStatementsResponse'
+  /companies/{companyId}/financial-statements/{id}:
+    get:
+      tags:
+        - Financial Statements
+      summary: Get Financial Statement
+      operationId: GetFinancialStatement
+      parameters:
+        - name: companyId
+          in: path
+          example: MSFT
+          schema:
+            type: string
+        - name: id
+          in: path
+          example: 20180930-10K
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFinancialStatementResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFinancialStatementResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFinancialStatementResponse'
+
+    delete:
+      tags:
+        - Financial Statements
+      summary: Delete Financial Statement
+      operationId: DeleteFinancialStatement
+      parameters:
+        - name: companyId
+          in: path
+          example: MSFT
+          schema:
+            type: string
+        - name: id
+          in: path
+          example: 20180930-10K
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            Request has succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFinancialStatementResponse'
+        400:
+          description: |
+            Server cannot process the request due to a client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFinancialStatementResponse'
+        500:
+          description: |
+            Server encountered an unexpected condition that prevented it from fulfilling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFinancialStatementResponse'
+
+  /companies/financial-statements/_search:
+    post:
+      summary: Search Financial Statements
+      operationId: SearchFinancialStatements
+      tags:
+        - Planned / Experimental
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchFinancialStatementsRequest'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFinancialStatementsResponse'
+components:
+  schemas:
+    FinancialStatement:
+      properties:
+        companyId:
+          type: string
+          example:
+            GE
+        id:
+          type: string
+          example: 20190331-10K
+        filingType:
+          type: string
+          enum:
+            - 10K
+            - 10Q
+        url:
+          type: string
+        date:
+          type: string
+          format: date
+          example: 2018-09-29
+        createdOn:
+          type: string
+          format: 'date-time'
+        createdBy:
+          type: string
+          example:
+            erfangc
+        updatedOn:
+          type: string
+          format: 'date-time'
+        updatedBy:
+          type: string
+        incomeStatement:
+          $ref: '#/components/schemas/IncomeStatement'
+        balanceSheet:
+          $ref: '#/components/schemas/BalanceSheet'
+        cashflowStatement:
+          $ref: '#/components/schemas/CashflowStatement'
+    IncomeStatement:
+      properties:
+        totalRevenue:
+          type: number
+          format: double
+        costOfRevenue:
+          type: number
+          format: double
+        grossProfit:
+          type: number
+          format: double
+        researchDevelopment:
+          type: number
+          format: double
+        sellingGeneralAndAdministrative:
+          type: number
+          format: double
+        totalOperatingExpenses:
+          type: number
+          format: double
+        operatingIncomeOrLoss:
+          type: number
+          format: double
+        totalOtherIncomeOrExpensesNet:
+          type: number
+          format: double
+        earningsBeforeInterestAndTaxes:
+          type: number
+          format: double
+        interestExpense:
+          type: number
+          format: double
+        incomeBeforeTax:
+          type: number
+          format: double
+        incomeTaxExpense:
+          type: number
+          format: double
+        netIncomeFromContinuingOps:
+          type: number
+          format: double
+        netIncome:
+          type: number
+          format: double
+        netIncomeApplicableToCommonShares:
+          type: number
+          format: double
+    BalanceSheet:
+      properties:
+        cashAndCashEquivalents:
+          type: number
+          format: double
+        shortTermInvestments:
+          type: number
+          format: double
+        netReceivables:
+          type: number
+          format: double
+        inventory:
+          type: number
+          format: double
+        otherCurrentAssets:
+          type: number
+          format: double
+        totalCurrentAssets:
+          type: number
+          format: double
+        longTermInvestments:
+          type: number
+          format: double
+        propertyPlantAndEquipment:
+          type: number
+          format: double
+        otherAssets:
+          type: number
+          format: double
+        totalAssets:
+          type: number
+          format: double
+        capitaSurplus:
+          type: number
+          format: double
+        accountsPayable:
+          type: number
+          format: double
+        shortOrCurrentLongTermDebt:
+          type: number
+          format: double
+        otherCurrentLiabilities:
+          type: number
+          format: double
+        totalCurrentLiabilities:
+          type: number
+          format: double
+        longTermDebt:
+          type: number
+          format: double
+        otherLiabilities:
+          type: number
+          format: double
+        totalLiabilities:
+          type: number
+          format: double
+        commonStock:
+          type: number
+          format: double
+        retainedEarnings:
+          type: number
+          format: double
+        treasuryStock:
+          type: number
+          format: double
+        otherStockholderEquity:
+          type: number
+          format: double
+        totalStockholderEquity:
+          type: number
+          format: double
+        netTangibleAssets:
+          type: number
+          format: double
+        goodwill:
+          type: number
+          format: double
+        intangibleAssets:
+          type: number
+          format: double
+        accumulatedAmortization:
+          type: number
+          format: double
+        deferredLongTermAssetCharges:
+          type: number
+          format: double
+        redeemablePreferredStock:
+          type: number
+          format: double
+        deferredLongTermLiabilityCharges:
+          type: number
+          format: double
+        minorityInterest:
+          type: number
+          format: double
+        negativeGoodwill:
+          type: number
+          format: double
+    CashflowStatement:
+      properties:
+        netIncome:
+          type: number
+          format: double
+        depreciation:
+          type: number
+          format: double
+        adjustmentsToNetIncome:
+          type: number
+          format: double
+        changesInAccountsReceivables:
+          type: number
+          format: double
+        changesInLiabilities:
+          type: number
+          format: double
+        changesInInventories:
+          type: number
+          format: double
+        changesInOtherOperatingActivities:
+          type: number
+          format: double
+        totalCashFlowFromOperatingActivities:
+          type: number
+          format: double
+        capitalExpenditures:
+          type: number
+          format: double
+        investments:
+          type: number
+          format: double
+        otherCashFlowsFromInvestingActivities:
+          type: number
+          format: double
+        totalCashFlowsFromInvestingActivities:
+          type: number
+          format: double
+        dividendsPaid:
+          type: number
+          format: double
+        netBorrowings:
+          type: number
+          format: double
+        totalCashFlowsFromFinancingActivities:
+          type: number
+          format: double
+        changeInCashAndCashEquivalents:
+          type: number
+          format: double
+    GetFinancialStatementsResponse:
+      properties:
+        financialStatements:
+          type: array
+          items:
+            $ref: '#/components/schemas/FinancialStatement'
+    CreateOrUpdateFinancialStatementsRequest:
+      properties:
+        financialStatements:
+          type: array
+          items:
+            $ref: '#/components/schemas/FinancialStatement'
+    SearchFinancialStatementsResponse:
+      properties:
+        financialStatements:
+          type: array
+          items:
+            $ref: '#/components/schemas/FinancialStatement'
+    SearchFinancialStatementsRequest:
+      properties:
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        filingType:
+          type: string
+          enum:
+            - 10K
+            - 10Q
+        companyId:
+          type: string
+    Company:
+      properties:
+        id:
+          type: string
+        marketCap:
+          type: number
+          format: double
+        previousClose:
+          type: number
+          format: double
+        idType:
+          type: string
+        description:
+          type: string
+        sector:
+          type: string
+        industry:
+          type: string
+        country:
+          type: string
+        ticker:
+          type: string
+        name:
+          type: string
+        createdOn:
+          type: string
+          format: 'date-time'
+        createdBy:
+          type: string
+        updatedOn:
+          type: string
+          format: 'date-time'
+        updatedBy:
+          type: string
+    CreateOrUpdateCompanyRequest:
+      properties:
+        company:
+          $ref: '#/components/schemas/Company'
+    CreateOrUpdateCompanyResponse:
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+    GetCompanyResponse:
+      properties:
+        company:
+          $ref: '#/components/schemas/Company'
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+    DeleteCompanyResponse:
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+    CreateOrUpdateFinancialStatementsResponse:
+      properties:
+        financialStatements:
+          type: array
+          items:
+            $ref: '#/components/schemas/FinancialStatement'
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+    DeleteFinancialStatementsResponse:
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+    GetFinancialStatementResponse:
+      properties:
+        financialStatement:
+          $ref: '#/components/schemas/FinancialStatement'
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+    DeleteFinancialStatementResponse:
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: 'date-time'
+

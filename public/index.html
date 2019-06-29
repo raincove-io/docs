@@ -61,7 +61,7 @@
 <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const service = urlParams.get('service') || "companies";
+    const service = urlParams.get('service') || "finser";
     Redoc.init(`openapi/${service}.yaml`, {
         scrollYOffset: 60,
         requiredPropsFirst: true,
