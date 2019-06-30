@@ -6,8 +6,8 @@
 #
 WORKING_DIR=$PWD
 OUTPUT_DIR=$PWD/output
-rm -rf ${OUTPUT_DIR} &&
-mkdir -p ${OUTPUT_DIR} &&
+rm -rf ${OUTPUT_DIR}
+mkdir -p ${OUTPUT_DIR}
 
 SDK_NAME=raincove-sdk
 SERVER=https://api.raincove.io
@@ -17,6 +17,14 @@ URL=https://github.com/raincove-io
 # clone the SDK repo
 #
 git clone ${URL}/${SDK_NAME}.git ${OUTPUT_DIR}/${SDK_NAME}
+
+#
+# delete all files except the .git folder
+#
+cd ${OUTPUT_DIR}/${SDK_NAME}
+find . -type d -not -name '.git' -delete
+find ${OUTPUT_DIR}/${SDK_NAME} -type f -not -name '.git' -delete
+cd ${WORKING_DIR}
 
 #
 # generate the SDK
@@ -42,7 +50,7 @@ docker run \
     --email "erfangc@gmail.com" \
     --scmConnection scm:git:git://github.com/raincove-io/${SDK_NAME}.git \
     --scmDeveloperConnection scm:git:git@github.com:raincove-io/${SDK_NAME}.git \
-    --scmUrl ${URL}/${SDK_NAME}/tree/master\
+    --scmUrl ${URL}/${SDK_NAME}/tree/master
 
 #
 # build and commit the generated SDK back into Git
