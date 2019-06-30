@@ -5,7 +5,7 @@
 # instead of running this script
 #
 WORKING_DIR=$PWD
-OUTPUT_DIR=$PWD/output
+OUTPUT_DIR=/tmp/sdk-generator
 rm -rf ${OUTPUT_DIR}
 mkdir -p ${OUTPUT_DIR}
 
@@ -22,8 +22,8 @@ git clone ${URL}/${SDK_NAME}.git ${OUTPUT_DIR}/${SDK_NAME}
 # delete all files except the .git folder
 #
 cd ${OUTPUT_DIR}/${SDK_NAME}
-find . -type d -not -name '.git' -delete
-find ${OUTPUT_DIR}/${SDK_NAME} -type f -not -name '.git' -delete
+find . -type d -not -name '.git' -depth 0 -delete
+find . -type f -not -name '.git' -depth 0 -delete
 cd ${WORKING_DIR}
 
 #
@@ -31,6 +31,7 @@ cd ${WORKING_DIR}
 #
 docker run \
     --volume ${WORKING_DIR}:/app \
+    --volume ${OUTPUT_DIR}:${OUTPUT_DIR} \
     erfangc/sdk-generator:latest \
     --artifactId ${SDK_NAME} \
     --groupId io.github.erfangc \
@@ -43,7 +44,7 @@ docker run \
     --sdkAudience ${SERVER} \
     --sdkClientId t6VkSzjatwn240k31waGW8lhiRjCN6Y4 \
     --sdkName ${SDK_NAME} \
-    --sdkOutputDirectory /app/output/${SDK_NAME} \
+    --sdkOutputDirectory ${OUTPUT_DIR}/${SDK_NAME} \
     --serviceEndpoint ${SERVER} \
     --url ${URL} \
     --name "Erfang Chen" \
