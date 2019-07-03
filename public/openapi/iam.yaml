@@ -248,7 +248,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateOrUpdateBindingResponse'
 
-  /roles/{roleId}/rolebindings/{id}:
+  /roles/{roleId}/bindings/{id}:
     get:
       tags:
         - Bindings
@@ -334,17 +334,14 @@ paths:
       parameters:
         - name: Authorization
           in: header
-          description: The JWT token representing the subject to be authorized
+          description: The JWT token representing the subject to be authorized (i.e. `Bearer xxxx`)
           schema:
-            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
             type: string
             required: false
         - name: X-Original-URL
           in: header
           description: The resource the subject is attempting to access
           schema:
-            example:
-              https://api.raincove.io/finser/api/v1/companies/MSFT/financial-statements
             type: string
           required: true
         - name: X-Original-Method
@@ -447,7 +444,7 @@ components:
           format: 'date-time'
     GetBindingResponse:
       properties:
-        roleBinding:
+        binding:
           $ref: '#/components/schemas/Binding'
     DeleteBindingResponse:
       properties:
@@ -458,7 +455,7 @@ components:
           format: 'date-time'
     GetBindingsResponse:
       properties:
-        roleBindings:
+        bindings:
           type: array
           items:
             $ref: '#/components/schemas/Binding'
@@ -471,7 +468,7 @@ components:
           format: 'date-time'
     CreateOrUpdateBindingRequest:
       properties:
-        roleBinding:
+        binding:
           $ref: '#/components/schemas/Binding'
     AuthorizeResponse:
       properties:
