@@ -338,7 +338,7 @@ paths:
           schema:
             type: string
             required: false
-        - name: X-Original-URL
+        - name: X-Auth-Request-Redirect
           in: header
           description: The resource the subject is attempting to access
           schema:
