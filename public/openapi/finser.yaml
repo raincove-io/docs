@@ -642,6 +642,9 @@ components:
           type: string
     Company:
       properties:
+        beta3YMonthly:
+          type: number
+          format: double
         id:
           type: string
         marketCap:
@@ -735,4 +738,3 @@ components:
         timestamp:
           type: string
           format: 'date-time'
-

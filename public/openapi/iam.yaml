@@ -26,14 +26,14 @@ info:
     ### Role
 
     A `Role` defines a set of resources and actions one can perform on the system. A `Role` is an abstract description of a job function or a specific type of user
-    of the platform, it does not define who those users are. For that, please see `Binding`
+    of the platform, it does not define who those users are. For that, please see `RoleBinding`
 
     Once a `Role` is created
 
     ### Binding
 
-    A `Binding` describes a relationship between a principal (user / group or machine user) and a `Role`. Principals bound
-    to the `Role` in a `Binding` are granted the permissions defined in the `Role`
+    A `RoleBinding` describes a relationship between a principal (user / group or machine user) and a `Role`. Principals bound
+    to the `Role` in a `RoleBinding` are granted the permissions defined in the `Role`
 
   title: IAM
   version: 1.0.0-RC
@@ -176,10 +176,10 @@ paths:
   /roles/{roleId}/bindings:
     get:
       tags:
-        - Bindings
-      summary: Get Bindings
-      operationId: GetBindings
-      description: Get all `Binding`s for a given role
+        - Role Bindings
+      summary: Get Role Bindings
+      operationId: GetRoleBindings
+      description: Get all `RoleBinding`s that are bound to the given role
       parameters:
         - name: roleId
           in: path
@@ -193,38 +193,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBindingsResponse'
+                $ref: '#/components/schemas/GetRoleBindingsResponse'
         400:
           description: |
             Server cannot process the request due to a client error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBindingsResponse'
+                $ref: '#/components/schemas/GetRoleBindingsResponse'
         500:
           description: |
             Server encountered an unexpected condition that prevented it from fulfilling the request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBindingsResponse'
+                $ref: '#/components/schemas/GetRoleBindingsResponse'
+  /role-bindings:
     post:
       tags:
-        - Bindings
+        - Role Bindings
       summary: Create or Update Binding
       operationId: CreateOrUpdateBinding
-      description: Create or update a `Binding` object. This operation associates a principal with a role
-      parameters:
-        - name: roleId
-          example: power-users
-          in: path
-          schema:
-            type: string
+      description: Create or update a `RoleBinding` object. This operation associates a principal with a role
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateOrUpdateBindingRequest'
+              $ref: '#/components/schemas/CreateOrUpdateRoleBindingRequest'
       responses:
         200:
           description: |
@@ -232,38 +227,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateOrUpdateBindingResponse'
+                $ref: '#/components/schemas/CreateOrUpdateRoleBindingResponse'
         400:
           description: |
             Server cannot process the request due to a client error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateOrUpdateBindingResponse'
+                $ref: '#/components/schemas/CreateOrUpdateRoleBindingResponse'
         500:
           description: |
             Server encountered an unexpected condition that prevented it from fulfilling the request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateOrUpdateBindingResponse'
+                $ref: '#/components/schemas/CreateOrUpdateRoleBindingResponse'
 
-  /roles/{roleId}/bindings/{id}:
+  /role-bindings/{id}:
     get:
       tags:
-        - Bindings
-      summary: Get Binding
-      operationId: GetBinding
-      description: Get a `Binding` by id
+        - Role Bindings
+      summary: Get Role Binding
+      operationId: GetRoleBinding
+      description: Get a `RoleBinding` by id
       parameters:
-        - name: roleId
-          in: path
-          example: power-users
-          schema:
-            type: string
         - name: id
           in: path
-          example: joe
+          example: joe-as-admin
           schema:
             type: string
       responses:
@@ -273,38 +263,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBindingResponse'
+                $ref: '#/components/schemas/GetRoleBindingResponse'
         400:
           description: |
             Server cannot process the request due to a client error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBindingResponse'
+                $ref: '#/components/schemas/GetRoleBindingResponse'
         500:
           description: |
             Server encountered an unexpected condition that prevented it from fulfilling the request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBindingResponse'
+                $ref: '#/components/schemas/GetRoleBindingResponse'
     delete:
       tags:
-        - Bindings
+        - Role Bindings
       summary: Delete Binding
       operationId: Delete Binding
       parameters:
-        - name: roleId
-          in: path
-          example: power-users
-          schema:
-            type: string
         - name: id
           in: path
           example: joe
           schema:
             type: string
-      description: Delete a `Binding` by id
+      description: Delete a `RoleBinding` by id
       responses:
         200:
           description: |
@@ -312,21 +297,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteBindingResponse'
+                $ref: '#/components/schemas/DeleteRoleBindingResponse'
         400:
           description: |
             Server cannot process the request due to a client error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteBindingResponse'
+                $ref: '#/components/schemas/DeleteRoleBindingResponse'
         500:
           description: |
             Server encountered an unexpected condition that prevented it from fulfilling the request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteBindingResponse'
+                $ref: '#/components/schemas/DeleteRoleBindingResponse'
   /_authorize:
     get:
       summary: Authorize Request
@@ -387,7 +372,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Role'
-    Binding:
+    RoleBinding:
       properties:
         id:
           type: string
@@ -442,34 +427,34 @@ components:
         timestamp:
           type: string
           format: 'date-time'
-    GetBindingResponse:
+    GetRoleBindingResponse:
       properties:
-        binding:
-          $ref: '#/components/schemas/Binding'
-    DeleteBindingResponse:
+        roleBinding:
+          $ref: '#/components/schemas/RoleBinding'
+    DeleteRoleBindingResponse:
       properties:
         message:
           type: string
         timestamp:
           type: string
           format: 'date-time'
-    GetBindingsResponse:
+    GetRoleBindingsResponse:
       properties:
-        bindings:
+        roleBindings:
           type: array
           items:
-            $ref: '#/components/schemas/Binding'
-    CreateOrUpdateBindingResponse:
+            $ref: '#/components/schemas/RoleBinding'
+    CreateOrUpdateRoleBindingResponse:
       properties:
         message:
           type: string
         timestamp:
           type: string
           format: 'date-time'
-    CreateOrUpdateBindingRequest:
+    CreateOrUpdateRoleBindingRequest:
       properties:
-        binding:
-          $ref: '#/components/schemas/Binding'
+        roleBinding:
+          $ref: '#/components/schemas/RoleBinding'
     AuthorizeResponse:
       properties:
         allowed:
