@@ -281,8 +281,8 @@ paths:
     delete:
       tags:
         - Role Bindings
-      summary: Delete Binding
-      operationId: Delete Binding
+      summary: Delete Role Binding
+      operationId: DeleteRoleBinding
       parameters:
         - name: id
           in: path
