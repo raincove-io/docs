@@ -212,8 +212,8 @@ paths:
     post:
       tags:
         - Role Bindings
-      summary: Create or Update Binding
-      operationId: CreateOrUpdateBinding
+      summary: Create or Update Role Binding
+      operationId: CreateOrUpdateRoleBinding
       description: Create or update a `RoleBinding` object. This operation associates a principal with a role
       requestBody:
         content:
