@@ -173,7 +173,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteRoleResponse'
-  /roles/{roleId}/bindings:
+  /roles/{roleId}/role-bindings:
     get:
       tags:
         - Role Bindings
