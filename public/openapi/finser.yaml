@@ -354,24 +354,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteFinancialStatementResponse'
 
-  /companies/financial-statements/_search:
-    post:
-      summary: Search Financial Statements
-      operationId: SearchFinancialStatements
-      tags:
-        - Planned / Experimental
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SearchFinancialStatementsRequest'
-      responses:
-        200:
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchFinancialStatementsResponse'
 components:
   schemas:
     FinancialStatement:
