@@ -16,7 +16,7 @@
   "author": "Erfang Chen, CFA",
   "license": "UNLICENSED",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "yargs": "^13.2.4"
   }
 }
